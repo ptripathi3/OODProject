@@ -1,5 +1,46 @@
 package pkg;
 
+interface Diameter{
+	public double getDiameter(); 
+}
+
+
+class Wheel implements Diameter{
+	private double rim_dia;			//Rim diameter
+	private double tire_dia;		//Tire diameter
+	private double wheel_dia;		//Wheel diameter
+	private boolean setwheel;		//bool value to know if wheel diameter set or not
+	
+	//CONSTRUCTOR
+	public Wheel(double rim_dia,double tire_dia) {
+		this.rim_dia=rim_dia;
+		this.tire_dia=tire_dia;
+		this.setwheel=false;
+	}
+	
+	public double getRim(){			//getter method for rim diameter
+		return rim_dia;
+	}
+	
+	public double getTire(){		//getter method for tire diameter
+		return tire_dia;
+	}
+	
+	private void setWheel() {		//private method to set wheel diameter
+		wheel_dia=getRim()+(2*getTire());
+		setwheel=true;
+	}
+	
+	public double circumference() {		//getter method for wheel's circumference
+		return getDiameter()*Math.PI;
+	}
+	
+	public double getDiameter() {		//getter method for wheel's diameter
+		if(setwheel==false)
+			setWheel();
+		return wheel_dia;
+	}
+}
 
 public class Gear {
 	
@@ -8,20 +49,15 @@ public class Gear {
 	private double chainring;		//No. of teeth in Chainring 
 	private double ratio;			//Ration of Chainring and Cog
 	private boolean setratio;		//bool value to know if ratio set or not
-	private double rim_dia;			//Rim diameter
-	private double tire_dia;		//Tire diameter
-	private double wheel_dia;		//Wheel diameter
-	private boolean setwheel;		//bool value to know if wheel diameter set or not
+	private Diameter wheel;			//Interface variable to call diameter function
 	
 	//CONSTRUCTOR
-	public Gear(double chainring,int cog,double rim_dia, double tire_dia) {
+	public Gear(double chainring,int cog,Diameter wheel) {
 
 		this.chainring=chainring;
 		this.cog=cog;
-		this.rim_dia=rim_dia;
-		this.tire_dia=tire_dia;
+		this.wheel=wheel;
 		this.setratio=false;
-		this.setwheel=false;
 	}	
 	
 	public Gear(double chainring,int cog) {
@@ -46,14 +82,6 @@ public class Gear {
 		return cog;
 	}
 	
-	public double getRim(){			//getter method for rim diameter
-		return rim_dia;
-	}
-	
-	public double getTire(){		//getter method for tire diameter
-		return tire_dia;
-	}
-	
 	public double getRatio() {		//getter method for ratio
 		if(setratio==false)
 			setRatio();
@@ -62,20 +90,9 @@ public class Gear {
 		
 	}
 	
-	private void setWheel() {		//private method to set wheel diameter
-		wheel_dia=getRim()+(2*getTire());
-		setwheel=true;
-	}
-	
-	public double getWheel() {		//getter method for wheel diameter
-		if(setwheel==false)
-			setWheel();
-		return wheel_dia;
-		
-	}
 	
 	public double getGearInches() {			//getter method for gear inches
-		return getWheel()*getRatio();
+		return wheel.getDiameter()*getRatio();
 		
 	}
 	
@@ -88,9 +105,14 @@ public class Gear {
 		System.out.println(g1.getRatio());		//print gear_inches for object g1
 		System.out.println(g2.getRatio());		//print gear_inches of object g2
 		
-		Gear g3=new Gear(52,11,26,1.5);				//New object of class gear
-		Gear g4=new Gear(52,11,24,1.25);			//New object of class gear
+		Wheel w1=new Wheel(26,1.5);				//New object of class Wheel
+		Diameter d1=w1;							//give reference of Wheel class(Subclass) to Diameter variable(Superclass) 
+		Diameter d2=new Wheel(24,1.25);			//New objects(Wheel) reference given to Diameter
+		Gear g3=new Gear(52,11,d1);				//New object of class gear
+		Gear g4=new Gear(52,11,d2);				//New object of class gear
+		System.out.println(w1.circumference());		//print circumference for object w1
 		System.out.println(g3.getGearInches());		//print gear_inches for object g1
 		System.out.println(g4.getGearInches());		//print gear_inches of object g2
+		
 	}
 }
